@@ -1,0 +1,533 @@
+<!DOCTYPE html>
+<html lang="uz">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Milliy Sertifikat Online Test Tizimi</title>
+    <style>
+        :root {
+            --primary-color: #1e3a8a;
+            --secondary-color: #2563eb;
+            --bg-color: #f1f5f9;
+            --text-color: #1e293b;
+            --success-color: #16a34a;
+            --warning-color: #d97706;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Arial, sans-serif;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* HEADER / YUQORI PANEL */
+        header {
+            background-color: var(--primary-color);
+            color: white;
+            padding: 15px 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1);
+        }
+
+        .logo-title h1 {
+            font-size: 1.4rem;
+            letter-spacing: 0.5px;
+        }
+
+        .logo-title p {
+            font-size: 0.85rem;
+            opacity: 0.8;
+        }
+
+        .user-info {
+            text-align: right;
+            font-size: 0.95rem;
+        }
+
+        /* CONTAINER */
+        .main-container {
+            max-width: 1200px;
+            margin: 20px auto;
+            padding: 0 15px;
+            width: 100%;
+            flex: 1;
+        }
+
+        .card {
+            background: white;
+            border-radius: 8px;
+            padding: 25px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+            border: 1px solid #e2e8f0;
+        }
+
+        /* MENYU / REGISTRATSIYA */
+        .login-box {
+            max-width: 500px;
+            margin: 40px auto;
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: 600;
+        }
+
+        .form-group input, .form-group select {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #cbd5e1;
+            border-radius: 6px;
+            font-size: 1rem;
+        }
+
+        /* TEST MESH (LAYOUT) */
+        .quiz-layout {
+            display: grid;
+            grid-template-columns: 1fr 300px;
+            gap: 20px;
+        }
+
+        @media (max-width: 768px) {
+            .quiz-layout {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* SAVOL PANELI */
+        .question-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 2px solid #e2e8f0;
+            padding-bottom: 10px;
+            margin-bottom: 15px;
+            font-weight: bold;
+        }
+
+        .question-text {
+            font-size: 1.1rem;
+            line-height: 1.6;
+            margin-bottom: 20px;
+        }
+
+        .options-list {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .option-item {
+            background: #f8fafc;
+            border: 1px solid #cbd5e1;
+            padding: 12px 15px;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .option-item:hover {
+            background: #e2e8f0;
+        }
+
+        .option-item.selected {
+            background: #dbeafe;
+            border-color: var(--secondary-color);
+            font-weight: bold;
+        }
+
+        /* SIDEBAR / NAVIGATSIYA */
+        .timer-box {
+            background: #fef3c7;
+            border: 1px solid #f59e0b;
+            color: #92400e;
+            padding: 12px;
+            border-radius: 6px;
+            text-align: center;
+            font-weight: bold;
+            font-size: 1.1rem;
+            margin-bottom: 15px;
+        }
+
+        .nav-grid {
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            gap: 8px;
+            margin-bottom: 20px;
+        }
+
+        .nav-btn {
+            padding: 10px 0;
+            background: #e2e8f0;
+            border: 1px solid #cbd5e1;
+            border-radius: 4px;
+            cursor: pointer;
+            font-weight: bold;
+            text-align: center;
+            transition: 0.2s;
+        }
+
+        .nav-btn.answered {
+            background: var(--success-color);
+            color: white;
+            border-color: var(--success-color);
+        }
+
+        .nav-btn.current {
+            border: 2px solid var(--secondary-color);
+            box-shadow: 0 0 5px rgba(37, 99, 235, 0.5);
+        }
+
+        /* TUGMALAR */
+        .btn {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 6px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: 0.2s;
+            font-size: 1rem;
+        }
+
+        .btn-primary { background: var(--secondary-color); color: white; }
+        .btn-success { background: var(--success-color); color: white; width: 100%; }
+        .btn-gray { background: #64748b; color: white; }
+        .btn:hover { opacity: 0.9; }
+
+        .action-buttons {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 20px;
+        }
+
+        /* NATIJALAR JADVALI */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 15px;
+        }
+
+        th, td {
+            padding: 12px;
+            border: 1px solid #cbd5e1;
+            text-align: center;
+        }
+
+        th { background: var(--primary-color); color: white; }
+
+        .hidden { display: none !important; }
+    </style>
+</head>
+<body>
+
+    <header>
+        <div class="logo-title">
+            <h1>MILLIY SERTIFIKAT TEST TIZIMI</h1>
+            <p>Edu-Talim Rasmiy Sinov Platori</p>
+        </div>
+        <div class="user-info" id="header-user-info">
+            Tizimga kirilmagan
+        </div>
+    </header>
+
+    <div class="main-container">
+        
+        <!-- 1. KIRISHOYNASI -->
+        <div id="login-screen" class="card login-box">
+            <h2 style="text-align: center; margin-bottom: 20px; color: var(--primary-color);">Testni Boshlash</h2>
+            
+            <div class="form-group">
+                <label>Ismingiz:</label>
+                <input type="text" id="user-name" placeholder="Ism">
+            </div>
+
+            <div class="form-group">
+                <label>Familiyangiz:</label>
+                <input type="text" id="user-surname" placeholder="Familiya">
+            </div>
+
+            <div class="form-group">
+                <label>Fanni tanlang:</label>
+                <select id="user-subject">
+                    <option value="Matematika">Matematika</option>
+                    <option value="Fizika">Fizika</option>
+                </select>
+            </div>
+
+            <button class="btn btn-primary" style="width: 100%; margin-top: 10px;" onclick="startTest()">Testga Kirish</button>
+            <button class="btn btn-gray" style="width: 100%; margin-top: 10px;" onclick="showResultsTable()">📊 Natijalar Bazasi</button>
+        </div>
+
+        <!-- 2. TEST topshirish OYNASI -->
+        <div id="quiz-screen" class="quiz-layout hidden">
+            <!-- Chap tomon: Savol -->
+            <div class="card">
+                <div class="question-header">
+                    <span id="question-number-title">Savol № 1</span>
+                    <span id="subject-tag" style="color: var(--secondary-color);">Matematika</span>
+                </div>
+
+                <div id="question-text" class="question-text">
+                    Savol yuklanmoqda...
+                </div>
+
+                <div id="options-container" class="options-list">
+                    <!-- Variantlar Javascriptdan keladi -->
+                </div>
+
+                <div class="action-buttons">
+                    <button class="btn btn-gray" onclick="prevQuestion()">⬅️ Oldingisi</button>
+                    <button class="btn btn-primary" onclick="nextQuestion()">Keyingisi ➡️</button>
+                </div>
+            </div>
+
+            <!-- O'ng tomon: Taymer va Grid Navigatsiya -->
+            <div>
+                <div class="timer-box">
+                    ⏱ Qolgan vaqt: <span id="timer-text">01:10:00</span>
+                </div>
+
+                <div class="card">
+                    <h3 style="font-size: 1rem; margin-bottom: 10px; text-align: center;">Savollar ro'yxati</h3>
+                    <div id="nav-grid" class="nav-grid">
+                        <!-- 1 dan 25/32 gacha tugmalar shu yerga tushadi -->
+                    </div>
+                    <button class="btn btn-success" onclick="confirmFinish()">🏁 Testni Yakunlash</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- 3. NATIJA OYNASI -->
+        <div id="result-screen" class="card hidden" style="text-align: center; max-width: 600px; margin: 30px auto;">
+            <h2 style="color: var(--success-color); margin-bottom: 10px;">TEST YAKUNLANDI</h2>
+            <hr style="margin-bottom: 20px;">
+            <p style="font-size: 1.1rem; margin-bottom: 8px;" id="res-fullname"></p>
+            <p style="font-size: 1.1rem; margin-bottom: 8px;" id="res-subject"></p>
+            <h3 style="color: var(--primary-color); font-size: 1.8rem; margin: 15px 0;" id="res-score">0 / 0</h3>
+            <p id="res-percent" style="font-size: 1.2rem; font-weight: bold; margin-bottom: 20px;"></p>
+            <button class="btn btn-primary" onclick="location.reload()">Asosiy sahifaga qaytish</button>
+        </div>
+
+        <!-- 4. NATIJALAR BAZASI JADVALI -->
+        <div id="table-screen" class="card hidden">
+            <h2 style="margin-bottom: 15px;">Saqlangan Natijalar (Edu-Talim)</h2>
+            <table>
+                <thead>
+                    <tr>
+                        <th>№</th>
+                        <th>Ism Familiya</th>
+                        <th>Fan</th>
+                        <th>Natija</th>
+                        <th>Sana va Vaqt</th>
+                    </tr>
+                </thead>
+                <tbody id="results-table-body">
+                </tbody>
+            </table>
+            <button class="btn btn-gray" style="margin-top: 15px;" onclick="backToMenu()">⬅️ Qaytish</button>
+        </div>
+
+    </div>
+
+    <script>
+        // MASALALAR BAZASI
+        const questionsData = {
+            "Matematika": [
+                { id: 1, text: "1. 42ⁿ (n ∈ ℕ) ning qanday eng kichik qiymatida 49⁵ · 12³ soniga qoldiqsiz bo'linadi?", options: ["A) 5", "B) 8", "C) 9", "D) 10"], answer: 2 },
+                { id: 2, text: "2. Hisoblang: √(2026! / (2025! + 2024!)) - √(10! / (9! + 8!))", options: ["A) 43", "B) 42", "C) 44", "D) 45"], answer: 1 },
+                { id: 3, text: "3. 1 soatda Anvar 20 ta detal, Sardor 21 ta detal ishlab chiqardi. Sardor 10 daqiqa oldin ishni tugatgan bo'lsa, har biri nechtadan detal yasagan?", options: ["A) 60", "B) 70", "C) 80", "D) 90"], answer: 1 },
+                { id: 4, text: "4. Zavodda 4020 ta avtomobil 1 oyda ishlab chiqarildi. Bu bir oylik rejaning 120% ni tashkil etadi. Rejadan tashqari nechta avtomobil ishlab chiqarilgan?", options: ["A) 804", "B) 700", "C) 670", "D) 750"], answer: 2 },
+                { id: 5, text: "5. Hisoblang: (2⁹⁸ + 1) / (2⁴⁹ + 2²⁵ + 1)", options: ["A) 2⁵⁰ - 2²⁴ + 1", "B) 2⁴⁹ - 2²⁵ + 1", "C) 2⁴⁹ + 2²⁵ + 1", "D) 2⁵⁰ + 2²⁴ + 1"], answer: 3 }
+            ],
+            "Fizika": [
+                { id: 1, text: "1. 1,8 km/min tezlik nechta m/s ga teng?", options: ["A) 28", "B) 10", "C) 30", "D) 18"], answer: 1 },
+                { id: 2, text: "2. Bir kuch m₁ massali jismga 2 m/s² tezlanish, m₂ massali jismga 6 m/s² tezlanish bera oladi. Shu kuch m₁ - m₂ massali jismga qanday tezlanish bera oladi?", options: ["A) 2", "B) 3", "C) 8", "D) 4"], answer: 3 },
+                { id: 3, text: "3. Massasi 8 kg boʻlgan jism tik yuqoriga 30 m/s tezlik bilan otildi. Jismning maksimal potensial energiyasini (J) toping.", options: ["A) 3200", "B) 2400", "C) 7200", "D) 3600"], answer: 3 }
+            ]
+        };
+
+        let currentQuestions = [];
+        let currentIndex = 0;
+        let userAnswers = {};
+        let userName = "";
+        let selectedSubject = "";
+        let timerInterval = null;
+        let timeLeft = 4200; // 70 daqiqa
+
+        function startTest() {
+            const name = document.getElementById("user-name").value.trim();
+            const surname = document.getElementById("user-surname").value.trim();
+
+            if (!name || !surname) {
+                alert("Iltimos, ismingiz va familiyangizni to'liq kiriting!");
+                return;
+            }
+
+            userName = `${name} ${surname}`;
+            selectedSubject = document.getElementById("user-subject").value;
+            currentQuestions = questionsData[selectedSubject] || [];
+
+            document.getElementById("header-user-info").innerHTML = `<b>${userName}</b><br><small>${selectedSubject}</small>`;
+            document.getElementById("subject-tag").innerText = selectedSubject;
+
+            document.getElementById("login-screen").classList.add("hidden");
+            document.getElementById("quiz-screen").classList.remove("hidden");
+
+            renderNavGrid();
+            loadQuestion(0);
+            startTimer();
+        }
+
+        function renderNavGrid() {
+            const navGrid = document.getElementById("nav-grid");
+            navGrid.innerHTML = "";
+
+            currentQuestions.forEach((_, idx) => {
+                const btn = document.createElement("button");
+                btn.className = "nav-btn";
+                btn.id = `nav-btn-${idx}`;
+                btn.innerText = idx + 1;
+                btn.onclick = () => loadQuestion(idx);
+                navGrid.appendChild(btn);
+            });
+        }
+
+        function loadQuestion(index) {
+            currentIndex = index;
+            const q = currentQuestions[currentIndex];
+
+            document.getElementById("question-number-title").innerText = `Savol № ${currentIndex + 1}`;
+            document.getElementById("question-text").innerText = q.text;
+
+            const container = document.getElementById("options-container");
+            container.innerHTML = "";
+
+            q.options.forEach((opt, idx) => {
+                const item = document.createElement("div");
+                item.className = `option-item ${userAnswers[currentIndex] === idx ? 'selected' : ''}`;
+                item.innerHTML = `<span>${opt}</span>`;
+                item.onclick = () => selectOption(idx);
+                container.appendChild(item);
+            });
+
+            // Grid tugmalar holatini yangilash
+            document.querySelectorAll(".nav-btn").forEach((btn, idx) => {
+                btn.classList.remove("current");
+                if (idx === currentIndex) btn.classList.add("current");
+                if (userAnswers[idx] !== undefined) btn.classList.add("answered");
+            });
+        }
+
+        function selectOption(optIndex) {
+            userAnswers[currentIndex] = optIndex;
+            loadQuestion(currentIndex);
+        }
+
+        function nextQuestion() {
+            if (currentIndex < currentQuestions.length - 1) {
+                loadQuestion(currentIndex + 1);
+            }
+        }
+
+        function prevQuestion() {
+            if (currentIndex > 0) {
+                loadQuestion(currentIndex - 1);
+            }
+        }
+
+        function startTimer() {
+            timerInterval = setInterval(() => {
+                if (timeLeft <= 0) {
+                    clearInterval(timerInterval);
+                    finishTest();
+                } else {
+                    timeLeft--;
+                    let h = Math.floor(timeLeft / 3600);
+                    let m = Math.floor((timeLeft % 3600) / 60);
+                    let s = timeLeft % 60;
+                    document.getElementById("timer-text").innerText = 
+                        `${String(h).padStart(2, '0')}:${String(m).padStart(2, '0')}:${String(s).padStart(2, '0')}`;
+                }
+            }, 1000);
+        }
+
+        function confirmFinish() {
+            if (confirm("Testni yakunlashga ishonchingiz komilmi?")) {
+                finishTest();
+            }
+        }
+
+        function finishTest() {
+            clearInterval(timerInterval);
+
+            let score = 0;
+            currentQuestions.forEach((q, idx) => {
+                if (userAnswers[idx] === q.answer) score++;
+            });
+
+            const total = currentQuestions.length;
+            const percent = Math.round((score / total) * 100);
+
+            saveResult({ name: userName, subject: selectedSubject, score: `${score}/${total}`, date: new Date().toLocaleString() });
+
+            document.getElementById("res-fullname").innerText = `Foydalanuvchi: ${userName}`;
+            document.getElementById("res-subject").innerText = `Fan: ${selectedSubject}`;
+            document.getElementById("res-score").innerText = `Natija: ${score} / ${total}`;
+            document.getElementById("res-percent").innerText = `Ko'rsatkich: ${percent}%`;
+
+            document.getElementById("quiz-screen").classList.add("hidden");
+            document.getElementById("result-screen").classList.remove("hidden");
+        }
+
+        function saveResult(res) {
+            let results = JSON.parse(localStorage.getItem("edu_results") || "[]");
+            results.push(res);
+            localStorage.setItem("edu_results", JSON.stringify(results));
+        }
+
+        function showResultsTable() {
+            const tbody = document.getElementById("results-table-body");
+            tbody.innerHTML = "";
+
+            let results = JSON.parse(localStorage.getItem("edu_results") || "[]");
+            results.reverse().forEach((res, index) => {
+                tbody.innerHTML += `
+                    <tr>
+                        <td>${results.length - index}</td>
+                        <td>${res.name}</td>
+                        <td>${res.subject}</td>
+                        <td>${res.score}</td>
+                        <td>${res.date}</td>
+                    </tr>
+                `;
+            });
+
+            document.getElementById("login-screen").classList.add("hidden");
+            document.getElementById("table-screen").classList.remove("hidden");
+        }
+
+        function backToMenu() {
+            document.getElementById("table-screen").classList.add("hidden");
+            document.getElementById("login-screen").classList.remove("hidden");
+        }
+    </script>
+</body>
+</html>
